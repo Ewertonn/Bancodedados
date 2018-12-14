@@ -12,11 +12,15 @@ from facepy import GraphAPI
 # Create your views here.
 
 def home(request):
-	graph = GraphAPI('EAANqe5z7HqMBAMZAynkwXBU15gThaCV55UbSw6bjNg3FiwwQW3WGb3eAVPbYdspDjVDp2yJdY5yZBZCFmhoz1FWfCVtXNnVaWgyGNJTTN2nwsnsEKbZCb9aXmIXWVBsJlF3Qs1REevI8daOH9TrGsuKLgMbUdtIhAWabXQV0wvNNTbbBMkhZAFH24aKvefk4ZD')
-	politica = ['lula', 'Jaburu', 'aiai', 'haddad', 'Brasil', 'povo', 'comunistas', '#elenao', 'Guedes', 'pobres', 'Temer', '#elenunca']
+	perfis = Perfil.objects.filter(perfil_id= 194)
+	print(perfis)
+	#https://developers.facebook.com/tools/explorer entre nesse link e pegue o token rs
+	graph = GraphAPI('EAANqe5z7HqMBADqLetRWszNPTAbnfvxrELlhy3VuNHNHbxmiOJfGRtSUZAx7KvibptHYJoEEnNj65aMl4pOn1BI72spbtfmXL1T2mgageXVvcvQRctQa2Jlv4oR2GpFVisjAEcVRmiHa5lyEIcdSWJZCdkP46nJFOuwC2bUdXRfOdJcGDn7iDxPZBZBecQYZD')
+	politica = ['lula', 'Jaburu', 'aiai', 'na', 'haddad', 'Brasil', 'povo', 'comunistas', '#elenao', 'Guedes', 'pobres', 'Temer', '#elenunca']
 	posts = graph.get('me/posts')
 	p = []
 	interessePolitica = []
+
 	for i in range(len(posts['data'])):
 		if 'message' in posts['data'][i].keys():
 			p.append(posts['data'][i]['message'])
@@ -24,14 +28,19 @@ def home(request):
 	for i in politica:
 		for j in p:
 			if i in j:
-				interessePolitica.append(j)
+				if j not in interessePolitica:
+					interessePolitica.append(j)
 
 	p = Perfil()
 	p.perfil_usuario = graph
-	p.perfil_mensagem = j
+	p.Perfil_interesse = politica
+	p.perfil_mensagem = interessePolitica
 	p.save()
-	return render(request, 'home/home.html', {'interessePolitica':interessePolitica}, {'politica': politica})
-	#return HttpResponse(interessePolitica)
+	return render(request, 'home/home.html', {'perfis':perfis, 'interessePolitica':interessePolitica}, {'politica': politica})
+def alunos(request):
+    return render(request, 'home/fotos.html')
+
+#return HttpResponse(interessePolitica)
 ##3b5998
 class perfilformulario(View): 
 	form_class = perfilformulario
